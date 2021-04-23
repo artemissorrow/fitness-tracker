@@ -2,39 +2,68 @@
 const router = require("express").Router();
 const Workout = require("../models/workoutPlan.js");
 
-const API = {
-  async getLastWorkout() {
-    let res;
-    try {
-      res = await fetch("/api/workouts");
-    } catch (err) {
-      console.log(err)
+router.post("/api/workouts", ({ body }, res) => {
+  Workout.create(body)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+});
+
+router.get("/api/workouts", (req, res) => {
+    Workout.aggregate([
+      {
+        $addFields: {
+          totalDuration: { $sum: "$exercises.duration" }
+        }
+      }
+    ])
+    Workout.get(body)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+  });
+
+router.get("/api/workouts/range", (req, res) => {
+  Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: { $sum: "$exercises.duration" },
+        totalWeight: { $sum: "$exercises.weight" }
+      }
     }
-    const json = await res.json();
-    return json[json.length - 1];
-  },
-  async addExercise(data) {
-    const id = location.search.split("=")[1];
-    const res = await fetch("/api/workouts/" + id, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+  ])
+  Workout.get(body)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.status(400).json(err);
     });
-    const json = await res.json();
-    return json;
-  },
-  async createWorkout(data = {}) {
-    const res = await fetch("/api/workouts", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" }
+})  
+
+router.put("/api/workouts/:id", (req, res) => {
+  Workout.findByIdAndUpdate(req.params.id,
+    {
+      $push: {
+        exercises: req.body
+      }
+    })
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.status(400).json(err);
     });
-    const json = await res.json();
-    return json;
-  },
-  async getWorkoutsInRange() {
-    const res = await fetch(`/api/workouts/range`);
-    const json = await res.json();
-    return json;
-  },
-};
+})
+
+
+// check readme line 27 for helper operators
+module.exports = router;
+
+
