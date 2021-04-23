@@ -26,9 +26,9 @@ The main challenge running through this assignment was finding the information i
 - Sorting out the aggregation in the API routes using $addFields and the $sum operator 
 - Remembering to commit as soon as any feature worked properly
 
-[Deployed App](https://calm-lake-23955.herokuapp.com/)
-
-## Screenshots
+## Screenshots and Link
+[Deployed App](https://calm-lake-23955.herokuapp.com/)  
+  
 ![screenshot of main page displaying last workout info](./assets/Screenshot1.jpg)  
 
 ![screenshot of all workout data displayed on dashboard](./assets/Screenshot2.jpg)
